@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glow - Kayıt Ol</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .auth-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        .auth-card { width: 100%; max-width: 450px; padding: 40px; text-align: center; }
+        .auth-card h2 { margin-bottom: 25px; font-size: 1.8rem; }
+        .auth-links { margin-top: 25px; font-size: 0.9rem; color: var(--text-muted); }
+        .auth-links a { color: var(--accent); text-decoration: none; font-weight: 500; }
+        .auth-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card glass-panel">
+            <div class="logo" style="justify-content: center; margin-bottom: 25px;">
+                <i class='bx bxs-component glow-icon'></i>
+                <h2>Glow<span>Fi</span></h2>
+            </div>
+            <h2>Yeni Hesap Oluştur</h2>
+            <form id="signupForm">
+                <div class="form-group" style="text-align: left;">
+                    <label>İsim Soyisim</label>
+                    <input type="text" id="name" placeholder="Adınız Soyadınız" required>
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label>E-Posta Adresi</label>
+                    <input type="email" id="email" placeholder="ornek@mail.com" required>
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label>Şifre</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label>Şifre (Tekrar)</label>
+                    <input type="password" id="passwordConfirm" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary w-100" style="justify-content: center;">Kayıt Ol</button>
+            </form>
+            <div class="auth-links">
+                Zaten hesabınız var mı? <a href="login.html">Giriş Yap</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

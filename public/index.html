@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glow - Akıllı Portföy Paneli</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Boxicons for stylish icons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar glass-panel">
+            <div class="logo">
+                <i class='bx bxs-component glow-icon'></i>
+                <h2>Glow<span>Fi</span></h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active"><i class='bx bxs-dashboard'></i> <span>Dashboard</span></a>
+                <a href="#" class="nav-item"><i class='bx bx-transfer-alt'></i> <span>İşlemler</span></a>
+                <a href="#" class="nav-item"><i class='bx bx-wallet'></i> <span>Cüzdanlar</span></a>
+                <a href="#" class="nav-item"><i class='bx bx-pie-chart-alt-2'></i> <span>Raporlar</span></a>
+            </nav>
+            <div class="sidebar-bottom">
+                <a href="#" class="nav-item"><i class='bx bx-cog'></i> <span>Ayarlar</span></a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <div class="greeting">
+                    <h1>Hoş Geldin, <span class="highlight">Kullanıcı</span> 👋</h1>
+                    <p>İşte portföyünün bugünkü özeti.</p>
+                </div>
+                <div class="topbar-actions">
+                    <button class="btn-primary" id="addBtn"><i class='bx bx-plus'></i> Yeni İşlem</button>
+                    <div class="profile-pic glass-panel">
+                        <img src="https://ui-avatars.com/api/?name=Skubra&background=rgba(255,255,255,0.1)&color=fff" alt="Profile">
+                    </div>
+                </div>
+            </header>
+
+            <!-- KPI Cards -->
+            <section class="kpi-cards">
+                <div class="card glass-panel kpi-card">
+                    <div class="card-icon income-icon"><i class='bx bx-trending-up'></i></div>
+                    <div class="card-info">
+                        <h3>Toplam Gelir</h3>
+                        <h2 id="totalIncome">₺0.00</h2>
+                    </div>
+                </div>
+                <div class="card glass-panel kpi-card">
+                    <div class="card-icon balance-icon"><i class='bx bx-wallet-alt'></i></div>
+                    <div class="card-info">
+                        <h3>Net Bakiye</h3>
+                        <h2 id="totalBalance">₺0.00</h2>
+                    </div>
+                </div>
+                <div class="card glass-panel kpi-card">
+                    <div class="card-icon expense-icon"><i class='bx bx-trending-down'></i></div>
+                    <div class="card-info">
+                        <h3>Toplam Gider</h3>
+                        <h2 id="totalExpense">₺0.00</h2>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts and Data -->
+            <section class="dashboard-grid">
+                <!-- Chart Area -->
+                <div class="glass-panel chart-container">
+                    <div class="section-header">
+                        <h3>Kategori Dağılımı</h3>
+                        <div class="dropdown"><i class='bx bx-dots-horizontal-rounded'></i></div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="expenseChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="glass-panel transactions-container">
+                    <div class="section-header">
+                        <h3>Son İşlemler</h3>
+                        <a href="#" class="view-all">Tümünü Gör</a>
+                    </div>
+                    <div class="transactions-list" id="transactionList">
+                        <!-- Example items handled by JS -->
+                        <div class="transaction-item skeleton"></div>
+                        <div class="transaction-item skeleton"></div>
+                        <div class="transaction-item skeleton"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add Transaction Modal -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h2>Yeni İşlem Ekle</h2>
+                <button class="close-btn" id="closeModalBtn"><i class='bx bx-x'></i></button>
+            </div>
+            <form id="addTransactionForm">
+                <div class="form-group">
+                    <label>İşlem Türü</label>
+                    <div class="type-selector">
+                        <input type="radio" name="type" id="typeIncome" value="income" checked>
+                        <label for="typeIncome" class="type-btn income-btn">Gelir</label>
+                        
+                        <input type="radio" name="type" id="typeExpense" value="expense">
+                        <label for="typeExpense" class="type-btn expense-btn">Gider</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Tutar (₺)</label>
+                    <input type="number" id="amount" placeholder="0.00" required step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="category">Kategori</label>
+                    <select id="category" required>
+                        <option value="">Seçiniz</option>
+                        <option value="1">Maaş</option>
+                        <option value="2">Yatırım</option>
+                        <option value="3">Market</option>
+                        <option value="4">Fatura</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="date">Tarih</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Açıklama</label>
+                    <input type="text" id="description" placeholder="Örn: Nisan ayı kira...">
+                </div>
+                <button type="submit" class="btn-primary w-100">İşlemi Kaydet</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

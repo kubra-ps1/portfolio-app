@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glow - Giriş Yap</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .auth-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        .auth-card { width: 100%; max-width: 400px; padding: 40px; text-align: center; }
+        .auth-card h2 { margin-bottom: 10px; font-size: 1.8rem; }
+        .auth-card p { color: var(--text-muted); margin-bottom: 25px; font-size: 0.95rem; }
+        .auth-links { margin-top: 25px; font-size: 0.9rem; color: var(--text-muted); }
+        .auth-links a { color: var(--accent); text-decoration: none; font-weight: 500; }
+        .auth-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card glass-panel">
+            <div class="logo" style="justify-content: center; margin-bottom: 25px;">
+                <i class='bx bxs-component glow-icon'></i>
+                <h2>Glow<span>Fi</span></h2>
+            </div>
+            <h2>Hoş Geldiniz</h2>
+            <p>Finansal verilerinize ulaşmak için giriş yapın.</p>
+            <form id="loginForm">
+                <div class="form-group" style="text-align: left;">
+                    <label>E-Posta Adresi</label>
+                    <input type="email" id="email" placeholder="ornek@mail.com" required>
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label>Şifre</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary w-100" style="justify-content: center;">Giriş Yap</button>
+            </form>
+            <div class="auth-links">
+                Hesabınız yok mu? <a href="signup.html">Kayıt Ol</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
