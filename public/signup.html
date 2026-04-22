@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,14 +9,44 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        .auth-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-        .auth-card { width: 100%; max-width: 450px; padding: 40px; text-align: center; }
-        .auth-card h2 { margin-bottom: 25px; font-size: 1.8rem; }
-        .auth-links { margin-top: 25px; font-size: 0.9rem; color: var(--text-muted); }
-        .auth-links a { color: var(--accent); text-decoration: none; font-weight: 500; }
-        .auth-links a:hover { text-decoration: underline; }
+        .auth-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .auth-card h2 {
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+
+        .auth-links {
+            margin-top: 25px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .auth-links a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
+
 <body>
     <div class="auth-container">
         <div class="auth-card glass-panel">
@@ -24,7 +55,9 @@
                 <h2>Glow<span>Fi</span></h2>
             </div>
             <h2>Yeni Hesap Oluştur</h2>
-            <form id="signupForm">
+
+            <div id="mesajKutusu" style="color: #4ade80; margin-bottom: 15px; font-weight: bold; display: none;"></div>
+            <form id="signupForm" autocomplete="off">
                 <div class="form-group" style="text-align: left;">
                     <label>İsim Soyisim</label>
                     <input type="text" id="name" placeholder="Adınız Soyadınız" required>
@@ -48,5 +81,55 @@
             </div>
         </div>
     </div>
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Sayfanın yenilenmesini engelle
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const password_again = document.getElementById('passwordConfirm').value; // ID'ye dikkat, value'yu password_again olarak alıyoruz
+
+            try {
+                const response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, password, password_again })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) { // 201 Created gibi başarılı kod
+                    const mesajKutusu = document.getElementById('mesajKutusu');
+                    mesajKutusu.style.display = 'block';
+                    
+                    yonlendir(3);
+                    
+                    function yonlendir(saniye){
+                        if(saniye === 0){
+                            window.location.href = '/login.html'; // 4. Zaman dolduğunda GİT emrini BURADA vermelisin.
+                            return;
+                        }
+                        mesajKutusu.innerHTML = data.message + `<br> ⏳ <b>${saniye}</b> saniye sonra giriş sayfasına yönlendiriliyorsunuz...`;
+                        saniye--;
+                        
+                        setTimeout(function(){
+                            yonlendir(saniye)
+                        }, 1000);
+                    }
+                } else {
+                    alert("Hata: " + (data.error || data.message));
+                }
+            } catch (error) {
+                console.error('Sunucu hatası:', error);
+                alert('Sunucu ile iletişim kurulamadı.');
+            }
+        });
+
+
+    </script>
 </body>
+
 </html>

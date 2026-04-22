@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <div class="app-container">
         <!-- Sidebar -->
@@ -28,7 +30,7 @@
                 <a href="#" class="nav-item"><i class='bx bx-pie-chart-alt-2'></i> <span>Raporlar</span></a>
             </nav>
             <div class="sidebar-bottom">
-                <a href="#" class="nav-item"><i class='bx bx-cog'></i> <span>Ayarlar</span></a>
+                <a href="#" class="nav-item" id="settingsMenuBtn"><i class='bx bx-cog'></i> <span>Ayarlar</span></a>
             </div>
         </aside>
 
@@ -42,7 +44,8 @@
                 <div class="topbar-actions">
                     <button class="btn-primary" id="addBtn"><i class='bx bx-plus'></i> Yeni İşlem</button>
                     <div class="profile-pic glass-panel">
-                        <img src="https://ui-avatars.com/api/?name=Skubra&background=rgba(255,255,255,0.1)&color=fff" alt="Profile">
+                        <img src="https://ui-avatars.com/api/?name=Skubra&background=rgba(255,255,255,0.1)&color=fff"
+                            alt="Profile">
                     </div>
                 </div>
             </header>
@@ -92,10 +95,7 @@
                         <a href="#" class="view-all">Tümünü Gör</a>
                     </div>
                     <div class="transactions-list" id="transactionList">
-                        <!-- Example items handled by JS -->
-                        <div class="transaction-item skeleton"></div>
-                        <div class="transaction-item skeleton"></div>
-                        <div class="transaction-item skeleton"></div>
+                        <!-- Dinamik işlemler buraya eklenecek -->
                     </div>
                 </div>
             </section>
@@ -115,7 +115,7 @@
                     <div class="type-selector">
                         <input type="radio" name="type" id="typeIncome" value="income" checked>
                         <label for="typeIncome" class="type-btn income-btn">Gelir</label>
-                        
+
                         <input type="radio" name="type" id="typeExpense" value="expense">
                         <label for="typeExpense" class="type-btn expense-btn">Gider</label>
                     </div>
@@ -127,11 +127,7 @@
                 <div class="form-group">
                     <label for="category">Kategori</label>
                     <select id="category" required>
-                        <option value="">Seçiniz</option>
-                        <option value="1">Maaş</option>
-                        <option value="2">Yatırım</option>
-                        <option value="3">Market</option>
-                        <option value="4">Fatura</option>
+                        <option value="">(Henüz kategori oluşturmadınız)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -147,6 +143,385 @@
         </div>
     </div>
 
-    <script src="js/app.js"></script>
+    <!-- Ayarlar / Kategori Ekleme Modalı -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal glass-panel" style="max-width: 650px;">
+            <div class="modal-header">
+                <h2>Ayarlar & Kategoriler</h2>
+                <button class="close-btn" id="closeSettingsBtn"><i class='bx bx-x'></i></button>
+            </div>
+
+            <div class="settings-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <!-- Sol Taraf: Kategori Oluşturma -->
+                <div class="add-category-section">
+                    <h3 style="margin-bottom: 15px; font-size: 1.1rem; color: var(--text-muted)">Yeni Kategori Oluştur
+                    </h3>
+                    <form id="addCategoryForm">
+                        <div class="form-group">
+                            <label>Kategori Tipi</label>
+                            <div class="type-selector">
+                                <input type="radio" name="catType" id="catTypeIncome" value="income" checked>
+                                <label for="catTypeIncome" class="type-btn income-btn">Gelir</label>
+
+                                <input type="radio" name="catType" id="catTypeExpense" value="expense">
+                                <label for="catTypeExpense" class="type-btn expense-btn">Gider</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="catName">Kategori Adı</label>
+                            <input type="text" id="catName" placeholder="Örn: Kahve, Fatura, Market" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="catLimit">Aylık Limit (₺) - Opsiyonel</label>
+                            <input type="number" id="catLimit" placeholder="Sınırsız ise boş bırakın">
+                        </div>
+                        <button type="submit" class="btn-primary w-100"><i class='bx bx-check'></i> Kategoriyi
+                            Kaydet</button>
+                    </form>
+                </div>
+
+                <!-- Sağ Taraf: Listelenen Kategoriler -->
+                <div class="existing-categories-section">
+                    <h3 style="margin-bottom: 15px; font-size: 1.1rem; color: var(--text-muted)">Mevcut Kategorilerim
+                    </h3>
+                    <div class="transactions-list" id="myCategoriesList" style="max-height: 280px; overflow-y: auto;">
+                        <p style="color:var(--text-muted); font-size: 0.9rem;" id="emptyCatMsg">Henüz hiç özel kategori
+                            oluşturmadınız.</p>
+                        <!-- JS Listeyi Burada Dolduracak -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kategori Detayları Off-Canvas Paneli -->
+    <div class="offcanvas-overlay" id="categoryPanel">
+        <div class="offcanvas glass-panel">
+            <div class="offcanvas-header">
+                <div>
+                    <h2 id="oc-category-name">Mutfak 🍎</h2>
+                    <p class="oc-subtitle">Aylık Özet</p>
+                </div>
+                <button class="close-btn" id="closeCategoryBtn"><i class='bx bx-right-arrow-alt'></i></button>
+            </div>
+
+            <div class="oc-budget-section">
+                <div class="oc-budget-labels">
+                    <span id="oc-spent" style="color:var(--expense)">Harcanan: ₺1850</span>
+                    <span id="oc-limit">Limit: ₺2000</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <!-- Limit %90'ı aştığı için (1850/2000) danger class'ı eklenebilir JS ile -->
+                    <div class="progress-bar-fill danger" id="oc-progress" style="width: 92.5%;"></div>
+                </div>
+            </div>
+
+            <div class="oc-transactions">
+                <h3>Son Harcamalar</h3>
+                <div class="transactions-list" id="oc-transaction-list">
+                    <!-- JS Burayı Dolduracak. Örnek: -->
+                    <div class="transaction-item">
+                        <div class="t-left">
+                            <div class="t-icon expense-icon"><i class='bx bx-cart'></i></div>
+                            <div class="t-details">
+                                <h4>Migros Alışverişi</h4>
+                                <p>Bugün</p>
+                            </div>
+                        </div>
+                        <div class="t-amount expense">-₺450</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="t-left">
+                            <div class="t-icon expense-icon"><i class='bx bx-coffee'></i></div>
+                            <div class="t-details">
+                                <h4>Starbucks</h4>
+                                <p>Dün</p>
+                            </div>
+                        </div>
+                        <div class="t-amount expense">-₺120</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // getElementsByClassName sana bir LİSTE döndürür, o yüzden tek bir eleman seçmek için querySelector kullanmak daha iyidir.
+        const karsilama = document.querySelector('.highlight');
+        const userName = localStorage.getItem('userName');
+
+        // Güvenlik Duvarı: Cebi boş olan bir adam sızmaya çalışırsa login'e şutla!
+        if (!userName) {
+            window.location.href = '/login.html';
+        } else {
+            karsilama.innerText = userName; // İsmi ekrana yazdır!
+        }
+
+        // --- Yeni İşlem Modalı Aç/Kapat Mantığı ---
+        const addBtn = document.getElementById('addBtn');
+        const addModal = document.getElementById('addModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        addBtn.addEventListener('click', () => {
+            addModal.classList.add('active');
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            addModal.classList.remove('active');
+        });
+
+        // --- Kategori Off-Canvas Kapatma Mantığı (Açılış Grafikten Olacak) ---
+        const categoryPanel = document.getElementById('categoryPanel');
+        const closeCategoryBtn = document.getElementById('closeCategoryBtn');
+
+        closeCategoryBtn.addEventListener('click', () => {
+            categoryPanel.classList.remove('active');
+        });
+
+        // --- Ayarlar Kategori Paneli Aç/Kapat Mantığı ---
+        const settingsMenuBtn = document.getElementById('settingsMenuBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+
+        settingsMenuBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Menüdeki a linkinin sayfayı zıplatmasını engelleyelim
+            settingsModal.classList.add('active');
+            loadCategoriesForSettings();
+        });
+
+        closeSettingsBtn.addEventListener('click', () => {
+            settingsModal.classList.remove('active');
+        });
+
+        // Dışarıya veya siyah alana tıklayınca pencereleri otomatik kapatma:
+        window.addEventListener('click', (e) => {
+            if (e.target === addModal) addModal.classList.remove('active');
+            if (e.target === categoryPanel) categoryPanel.classList.remove('active');
+            if (e.target === settingsModal) settingsModal.classList.remove('active');
+        });
+
+        const categorySave = document.getElementById('addCategoryForm');
+        categorySave.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const userId = localStorage.getItem('userId');
+            const categoryType = document.querySelector('input[name="catType"]:checked').value;
+            const categoryName = document.getElementById('catName').value;
+            let montlyLimit = document.getElementById('catLimit').value;
+
+            const data = {
+                userId: userId,
+                name: categoryName,
+                type: categoryType
+            };
+
+            const response = await fetch('/api/categories', {
+                method: 'post',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                if (montlyLimit == '') {
+                    montlyLimit = '-';
+                } else {
+
+                    const comingID = result.categoryId;
+                    const response2 = await fetch('/api/budgets', {
+                        method: 'post',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: userId, categoryId: comingID, montlyLimit: montlyLimit, date: new Date() })
+                    });
+
+
+                    if (response2.ok) {
+                        const result2 = await response2.json();
+                        montlyLimit = result2.montlyLimit;
+                    }
+                }
+
+                loadCategoriesForSettings();
+            }
+        })
+
+
+        // --- Yeni İşlem Paneli: Kategorileri Çekme ---
+        async function loadCategoriesForSelect() {
+            const userId = localStorage.getItem('userId');
+            if (!userId) return;
+
+            const selectedType = document.querySelector('input[name="type"]:checked').value;
+
+            const res = await fetch(`/api/categories/${userId}`);
+            if (res.ok) {
+                const allCats = await res.json();
+
+                // Seçilen türe (gelir/gider) göre kategorileri filtreliyoruz
+                const filteredCats = allCats.filter(c => c.type === selectedType);
+
+                const selectEl = document.getElementById('category');
+                selectEl.innerHTML = '<option value="">(Bir kategori seçiniz)</option>';
+
+                if (filteredCats.length > 0) {
+                    filteredCats.forEach(c => {
+                        const option = document.createElement('option');
+                        option.value = c.id;
+                        option.innerText = c.name;
+                        selectEl.appendChild(option);
+                    });
+                } else {
+                    selectEl.innerHTML = '<option value="">(Bu türe ait kategori bulunamadı)</option>';
+                }
+            }
+        }
+
+        // İşlem türü (gelir/gider) değiştiğinde kategorileri güncelle
+        document.querySelectorAll('input[name="type"]').forEach(radio => {
+            radio.addEventListener('change', loadCategoriesForSelect);
+        });
+
+        // --- Ayarlar Paneli: Kategorileri Çekme ve Gösterme ---
+        async function loadCategoriesForSettings() {
+            const userId = localStorage.getItem('userId');
+            if (!userId) return;
+            const res = await fetch(`/api/categories/${userId}`);
+            if (res.ok) {
+                const cats = await res.json();
+                const catList = document.getElementById('myCategoriesList');
+
+                catList.innerHTML = ''; // Listeyi temizle
+
+                if (cats.length > 0) {
+                    cats.forEach(c => {
+                        const catItem = document.createElement('div');
+                        const limitText = (c.monthly_limit && c.monthly_limit !== '-') ? c.monthly_limit + ' ₺' : 'Sınırsız';
+                        const typeText = c.type === 'income' ? 'Gelir' : 'Gider';
+
+                        catItem.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding: 12px; background: rgba(255,255,255,0.05); margin-bottom: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                            <div>
+                                <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">${typeText}</span><br>
+                                <strong style="font-size: 1.05rem; color: var(--text-light);">${c.name}</strong>
+                            </div>
+                            <div style="font-size: 0.9rem; color: var(--text-muted); text-align: right;">
+                                <span style="font-size: 0.75rem; display: block;">Aylık Limit</span>
+                                <span style="color: var(--text-light); font-weight: 500;">${limitText}</span>
+                            </div>
+                        </div>`;
+                        catList.appendChild(catItem);
+                    });
+                } else {
+                    catList.innerHTML = '<p style="color:var(--text-muted); font-size: 0.9rem; text-align: center; padding: 20px 0;" id="emptyCatMsg">Henüz hiç özel kategori oluşturmadınız.</p>';
+                }
+            }
+        }
+
+        // Sayfa yüklenince asenkron olarak kategorileri dropdown'a yükler
+        loadCategoriesForSelect();
+        // İşlemleri yüklemek için dashboard'u da yenile
+        refreshDashboard();
+
+        // --- Yeni İşlem Gönderme (Tıklandığında) ---
+        const addTransactionForm = document.getElementById('addTransactionForm');
+        addTransactionForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const type = document.querySelector('input[name="type"]:checked').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const category_id = document.getElementById('category').value;
+            const transaction_date = document.getElementById('date').value;
+            const description = document.getElementById('description').value;
+            const userId = localStorage.getItem('userId');
+
+            if (!category_id) {
+                alert('Lütfen bir kategori seçin!');
+                return;
+            }
+
+            const data = {
+                user_id: userId,
+                category_id: category_id,
+                type: type,
+                amount: amount,
+                transaction_date: transaction_date,
+                description: description
+            };
+
+            const res = await fetch('/api/transactions', {
+                method: 'post',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (res.ok) {
+                document.getElementById('addModal').classList.remove('active');
+                addTransactionForm.reset();
+                // Değişikliklerin ekrana yansıması için (şimdilik) sayfayı yenile
+                window.location.reload();
+                console.log("işlem kaydedildi");
+                refreshDashboard();
+            } else {
+                const result = await res.json();
+                alert('İşlem eklenirken hata: ' + result.error);
+            }
+        });
+        async function refreshDashboard() {
+            const userId = localStorage.getItem("userId");
+            if (!userId) return;
+            refreshBalance();
+            const res = await fetch(`/api/transactions/${userId}/recent`);
+            if (res.ok) {
+                const comingTransactions = await res.json();
+                const transctionDiv = document.getElementById('transactionList');
+                transctionDiv.innerHTML = ''; // Önceki öğeleri temizle
+                
+                if (comingTransactions.length === 0) {
+                    transctionDiv.innerHTML = '<p style="color:var(--text-muted); font-size: 0.9rem; text-align: center; padding: 20px 0;">Henüz hiç işlem yok.</p>';
+                    return;
+                }
+
+                
+                comingTransactions.forEach((transaction) => {
+                    const description = transaction.description;
+                    const amount = transaction.amount;
+                    const date = transaction.transaction_date;
+                    const type = transaction.type;
+                    
+                    const isExpense = type === 'expense';
+                    const typeClass = isExpense ? 'expense' : 'income';
+                    const typeIcon = isExpense ? '<i class=\'bx bx-cart\'></i>' : '<i class=\'bx bx-trending-up\'></i>'; // Genel ikon
+                    const amountPrefix = isExpense ? '-' : '+';
+                    const formattedAmount = `${amountPrefix}₺${parseFloat(amount).toFixed(2)}`;
+
+                    const tran = document.createElement('div');
+                    tran.classList.add('transaction-item');
+                    tran.innerHTML = `
+                        <div class="t-left">
+                            <div class="t-icon ${typeClass}-icon">${typeIcon}</div>
+                            <div class="t-details">
+                                <h4>${description}</h4>
+                                <p>${date}</p>
+                            </div>
+                        </div>
+                        <div class="t-amount ${typeClass}">${formattedAmount}</div>
+                    `;
+                    transctionDiv.appendChild(tran);
+                });
+            }
+        }
+        async function refreshBalance(){
+            const userId=localStorage.getItem('userId');
+            const income=document.getElementById('totalIncome');
+            const totalBalance=document.getElementById('totalBalance');
+            const totalExpense=document.getElementById('totalExpense');
+            const res=await fetch(`/api/balance/${userId}`);
+            const data=await res.json();
+            income.innerHTML=`${data.totalIncome}`;
+            totalExpense.innerHTML=`${data.totalExpense}`;
+            totalBalance.innerHTML=`${data.balance}`
+        }
+    </script>
 </body>
+
 </html>

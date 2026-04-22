@@ -8,17 +8,24 @@ CREATE TABLE IF NOT EXISTS users (
     net_balance REAL DEFAULT 0.0
 );
 
-CREATE TABLE IF NOT EXISTS categories (
+DROP TABLE IF EXISTS categories;
+
+CREATE TABLE categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
     name TEXT,
-    type TEXT
+    type TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE IF NOT EXISTS transactions (
+DROP TABLE IF EXISTS transactions;
+
+CREATE TABLE transactions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
     category_id INTEGER,
-    item_name TEXT,
+    type TEXT, -- 'income' veya 'expense'
+    description TEXT, -- Açıklama (Nereye harcandı?)
     amount REAL,
     transaction_date TEXT,
     FOREIGN KEY (user_id) REFERENCES users(id),

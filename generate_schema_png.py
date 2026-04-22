@@ -15,8 +15,8 @@ try:
 
     tables = {
         "USERS": ["id (PK)", "name", "email", "password", "total_income", "total_expense", "net_balance"],
-        "CATEGORIES": ["id (PK)", "name", "type"],
-        "TRANSACTIONS": ["id (PK)", "user_id (FK)", "category_id (FK)", "item_name", "amount", "date"],
+        "CATEGORIES": ["id (PK)", "user_id (FK)", "name", "type"],
+        "TRANSACTIONS": ["id (PK)", "user_id (FK)", "category_id (FK)", "type", "description", "amount", "transaction_date"],
         "BUDGETS": ["id (PK)", "user_id (FK)", "category_id (FK)", "monthly_limit", "month_year"]
     }
 
